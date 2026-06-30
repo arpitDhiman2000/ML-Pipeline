@@ -78,6 +78,17 @@ cloud = [
 # `uv sync` installs the project + the 'default-groups' below unless overridden.
 default-groups = ["dev", "mlops"]
 
+# Pull torch from the CPU-only wheel index. We serve on CPU (no GPU on the dev
+# box or free-tier EC2), so the CUDA-bundled PyPI wheel (~7 GB of nvidia libs)
+# is pure bloat — this keeps the Docker image deployable on free-tier disk.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

@@ -105,6 +105,28 @@ def train_fusion_cmd(
     console.print(table)
 
 
+@app.command("check-gate")
+def check_gate_cmd() -> None:
+    """Re-evaluate the trained model and apply the eval gate (CI promotion check).
+
+    Exits non-zero if the gate fails — this is what blocks a deploy in CI.
+    """
+    from threat_detection.evaluation.gate_check import evaluate_current_model
+
+    _, decision = evaluate_current_model()
+    table = Table(title="Eval gate")
+    table.add_column("Check")
+    for reason in decision.reasons:
+        style = "green" if reason.startswith("PASS") else "red"
+        table.add_row(f"[{style}]{reason}[/{style}]")
+    console.print(table)
+    if decision.passed:
+        console.print("[bold green]GATE PASSED[/bold green]")
+    else:
+        console.print("[bold red]GATE FAILED — deploy blocked[/bold red]")
+        raise typer.Exit(code=1)
+
+
 @app.command()
 def serve(
     host: str = typer.Option(None, help="Bind host (default from config)"),

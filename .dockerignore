@@ -1,0 +1,25 @@
+# Keep the build context small & the image clean. artifacts/ and src/ are kept.
+.git/
+.github/
+.venv/
+venv/
+data/
+mlruns/
+mlartifacts/
+.dvc/cache
+.dvc/tmp
+tests/
+docs/
+load/
+*.md
+!README.md
+.env
+.env.*
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.ipynb
