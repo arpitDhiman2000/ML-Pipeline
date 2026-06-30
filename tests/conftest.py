@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pandas as pd
 import pytest
 
 from threat_detection.config import (
@@ -12,6 +13,7 @@ from threat_detection.config import (
     TabularDataConfig,
     TextDataConfig,
 )
+from threat_detection.data import synthetic
 
 
 @pytest.fixture
@@ -48,3 +50,15 @@ def small_app_cfg(
         data=DataConfig(tabular=small_tabular_cfg, text=small_text_cfg, drift=DriftConfig()),
         split=SplitConfig(test_size=0.2, val_size=0.1, stratify=True),
     )
+
+
+@pytest.fixture
+def raw_flows(small_tabular_cfg: TabularDataConfig) -> pd.DataFrame:
+    """A small raw flow table (with injected Inf/NaN + duplicates)."""
+    return synthetic.generate_tabular(small_tabular_cfg, seed=11)
+
+
+@pytest.fixture
+def raw_text(small_text_cfg: TextDataConfig) -> pd.DataFrame:
+    """A small raw command/payload corpus."""
+    return synthetic.generate_text(small_text_cfg, seed=11)

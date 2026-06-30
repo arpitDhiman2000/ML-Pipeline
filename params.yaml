@@ -45,8 +45,19 @@ split:
   val_size: 0.10
   stratify: true
 
+# ---- Preprocessing & feature engineering (Sprint 1) -------------------------
+preprocessing:
+  numeric_imputer_strategy: median  # median is robust to the heavy-tailed flow features
+  scaler: standard                  # standard | robust | none
+  drop_duplicates: true             # duplicate flows would leak across train/test
+  text:
+    level: char       # char-level: payloads contain hostile, non-dictionary tokens
+    max_len: 256      # pad/truncate command strings to this length
+    min_freq: 1       # drop tokens rarer than this from the vocab
+    max_vocab: 5000   # cap vocabulary size
+    lowercase: true
+
 # ---- Placeholders filled in by later sprints --------------------------------
-preprocessing: {}    # Sprint 1
 isolation_forest: {} # Sprint 2
 xgboost: {}          # Sprint 2
 lstm: {}             # Sprint 3

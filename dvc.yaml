@@ -16,3 +16,23 @@ stages:
     outs:
       - data/raw/cicids2017/flows.parquet
       - data/raw/text_corpus/commands.parquet
+
+  preprocess:
+    cmd: td preprocess
+    deps:
+      - data/raw/cicids2017/flows.parquet
+      - data/raw/text_corpus/commands.parquet
+      - src/threat_detection/features
+    params:
+      - seed
+      - split
+      - preprocessing
+    outs:
+      - data/processed/tabular_train.parquet
+      - data/processed/tabular_val.parquet
+      - data/processed/tabular_test.parquet
+      - data/processed/text_train.parquet
+      - data/processed/text_val.parquet
+      - data/processed/text_test.parquet
+      - artifacts/preprocessor.joblib
+      - artifacts/tokenizer.json

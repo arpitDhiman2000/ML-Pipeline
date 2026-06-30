@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 import yaml
 from pydantic import BaseModel, Field, model_validator
@@ -56,6 +57,25 @@ class SplitConfig(BaseModel):
     stratify: bool = True
 
 
+class TextTokenizerConfig(BaseModel):
+    """Config for the command/payload tokenizer (used by the LSTM in Sprint 3)."""
+
+    level: Literal["char", "word"] = "char"
+    max_len: int = Field(default=256, gt=0)
+    min_freq: int = Field(default=1, ge=1)
+    max_vocab: int = Field(default=5000, gt=0)
+    lowercase: bool = True
+
+
+class PreprocessingConfig(BaseModel):
+    """Tabular + text preprocessing parameters."""
+
+    numeric_imputer_strategy: Literal["median", "mean", "most_frequent"] = "median"
+    scaler: Literal["standard", "robust", "none"] = "standard"
+    drop_duplicates: bool = True
+    text: TextTokenizerConfig = TextTokenizerConfig()
+
+
 class AppConfig(BaseModel):
     """Top-level validated view over ``params.yaml``."""
 
@@ -64,7 +84,7 @@ class AppConfig(BaseModel):
     split: SplitConfig
 
     # Forward-compatible holders for parameters added in later sprints.
-    preprocessing: dict = {}
+    preprocessing: PreprocessingConfig = PreprocessingConfig()
     isolation_forest: dict = {}
     xgboost: dict = {}
     lstm: dict = {}

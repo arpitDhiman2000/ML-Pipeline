@@ -47,3 +47,69 @@ stages:
       hash: md5
       md5: d1d1b542910118ea61c45bc22338f0a1
       size: 148787
+  preprocess:
+    cmd: td preprocess
+    deps:
+    - path: data/raw/cicids2017/flows.parquet
+      hash: md5
+      md5: c35c9319cc93d53fbb92a208c84b9397
+      size: 33214215
+    - path: data/raw/text_corpus/commands.parquet
+      hash: md5
+      md5: d1d1b542910118ea61c45bc22338f0a1
+      size: 148787
+    - path: src/threat_detection/features
+      hash: md5
+      md5: 4a5eb7c466533acc0eacb12a04dc1331.dir
+      size: 46026
+      nfiles: 12
+    params:
+      params.yaml:
+        preprocessing:
+          numeric_imputer_strategy: median
+          scaler: standard
+          drop_duplicates: true
+          text:
+            level: char
+            max_len: 256
+            min_freq: 1
+            max_vocab: 5000
+            lowercase: true
+        seed: 42
+        split:
+          test_size: 0.2
+          val_size: 0.1
+          stratify: true
+    outs:
+    - path: artifacts/preprocessor.joblib
+      hash: md5
+      md5: 831869f48e8f47c0907a297d682b37b4
+      size: 5199
+    - path: artifacts/tokenizer.json
+      hash: md5
+      md5: 766b77533135ef5daa2144854009ecdd
+      size: 885
+    - path: data/processed/tabular_test.parquet
+      hash: md5
+      md5: 4766aea689f5215ccbae9cb34701222c
+      size: 3892689
+    - path: data/processed/tabular_train.parquet
+      hash: md5
+      md5: dd3f64335c12a1a761218394ee5b2064
+      size: 14052633
+    - path: data/processed/tabular_val.parquet
+      hash: md5
+      md5: 5d547573486a8febba87b0aba1452041
+      size: 1929657
+    - path: data/processed/text_test.parquet
+      hash: md5
+      md5: a150394094792345a537685cdf58c3ea
+      size: 30633
+    - path: data/processed/text_train.parquet
+      hash: md5
+      md5: 9dda03d64710efd4b447d12a1a531d87
+      size: 105503
+    - path: data/processed/text_val.parquet
+      hash: md5
+      md5: 5a9af5a045ec7e1638a54867b3a2b180
+      size: 16254

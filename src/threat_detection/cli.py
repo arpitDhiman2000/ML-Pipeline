@@ -12,6 +12,7 @@ from rich.table import Table
 
 from threat_detection.config import get_config
 from threat_detection.data.generate import generate_raw_data
+from threat_detection.features.build import run_preprocessing
 from threat_detection.logging_utils import configure_logging
 
 app = typer.Typer(
@@ -37,6 +38,20 @@ def generate(force: bool = typer.Option(False, help="Regenerate even if files ex
     table.add_column("Path")
     for name, path in paths.items():
         table.add_row(name, str(path))
+    console.print(table)
+
+
+@app.command()
+def preprocess() -> None:
+    """Clean, split, and fit the preprocessing artifacts (tabular + text)."""
+    result = run_preprocessing()
+    table = Table(title="Preprocessing complete")
+    table.add_column("Modality")
+    table.add_column("Split")
+    table.add_column("Rows", justify="right")
+    for modality, splits in result.items():
+        for split, rows in splits.items():
+            table.add_row(modality, split, str(rows))
     console.print(table)
 
 

@@ -83,6 +83,19 @@ class Paths:
         return _resolve(_paths_config()["artifacts"]["reports"])
 
     @staticmethod
+    def preprocessor_artifact() -> Path:
+        return _resolve(_paths_config()["artifacts"]["preprocessor"])
+
+    @staticmethod
+    def tokenizer_artifact() -> Path:
+        return _resolve(_paths_config()["artifacts"]["tokenizer"])
+
+    @staticmethod
+    def processed_file(name: str) -> Path:
+        """Path to a processed dataset, e.g. ``processed_file('tabular_train')``."""
+        return Paths.processed_zone() / f"{name}.parquet"
+
+    @staticmethod
     def ensure(path: Path) -> Path:
         """Create the directory (or the file's parent) if missing; return it."""
         target = path if path.suffix == "" else path.parent
