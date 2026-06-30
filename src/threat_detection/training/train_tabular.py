@@ -23,11 +23,12 @@ from threat_detection.logging_utils import get_logger
 from threat_detection.models.anomaly import AnomalyDetector
 from threat_detection.models.classifier import AttackClassifier
 from threat_detection.paths import Paths
+from threat_detection.registry import TABULAR_MODEL
 from threat_detection.tracking import configure_mlflow
 
 log = get_logger(__name__)
 
-REGISTERED_MODEL_NAME = "threat-detection-tabular"
+REGISTERED_MODEL_NAME = TABULAR_MODEL
 EXPERIMENT = "threat-detection-tabular"
 
 

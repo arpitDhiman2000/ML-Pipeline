@@ -73,6 +73,48 @@ def train_tabular_cmd(
     console.print(table)
 
 
+@app.command("train-text")
+def train_text_cmd(
+    no_register: bool = typer.Option(False, help="Skip MLflow model-registry registration"),
+) -> None:
+    """Train the LSTM text classifier and bake it off vs the TF-IDF baseline."""
+    from threat_detection.training.train_text import train
+
+    metrics = train(register=not no_register)
+    table = Table(title="Text model — test metrics (LSTM vs baseline)")
+    table.add_column("Metric")
+    table.add_column("Value", justify="right")
+    for key, value in metrics.items():
+        table.add_row(key, f"{value:.4f}")
+    console.print(table)
+
+
+@app.command()
+def promote(
+    model: str = typer.Argument(
+        None, help="Registered model name; omit to promote all project models"
+    ),
+    version: str = typer.Option(None, help="Specific version; default = latest"),
+    alias: str = typer.Option("production", help="Alias to point at the version"),
+) -> None:
+    """Point an alias (default 'production') at a model version in the registry."""
+    from threat_detection.registry import ALL_MODELS
+    from threat_detection.registry import promote as do_promote
+
+    targets = [model] if model else list(ALL_MODELS)
+    table = Table(title="Registry promotion")
+    table.add_column("Model")
+    table.add_column("Alias")
+    table.add_column("Version", justify="right")
+    for name in targets:
+        try:
+            promoted = do_promote(name, version=version, alias=alias)
+            table.add_row(name, alias, promoted)
+        except Exception as exc:  # surface backend/registry errors clearly
+            table.add_row(name, alias, f"[red]FAILED: {exc}[/red]")
+    console.print(table)
+
+
 @app.command("show-config")
 def show_config() -> None:
     """Print the validated configuration loaded from params.yaml."""

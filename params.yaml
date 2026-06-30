@@ -83,7 +83,20 @@ eval_gate:
   min_per_class_recall: 0.50
   max_p99_latency_ms: 50  # enforced once serving exists (Sprint 4)
 
+# ---- LSTM text classifier (Sprint 3) ----------------------------------------
+lstm:
+  embedding_dim: 64
+  hidden_dim: 64
+  num_layers: 1
+  bidirectional: true   # read the payload both directions
+  dropout: 0.3
+  lr: 0.001
+  batch_size: 256
+  max_epochs: 8         # kept small (CPU-friendly); raise to chase F1
+  patience: 3           # early-stopping patience on val loss
+  operating_recall: 0.80
+  device: auto          # auto -> cuda if available, else cpu
+
 # ---- Placeholders filled in by later sprints --------------------------------
-lstm: {}             # Sprint 3
 fusion: {}           # Sprint 4
 drift_monitor: {}    # Sprint 6

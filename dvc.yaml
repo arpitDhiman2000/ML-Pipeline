@@ -55,3 +55,20 @@ stages:
       - artifacts/models/anomaly.joblib
       - artifacts/models/classifier.json
       - artifacts/models/classifier.json.meta.joblib
+
+  train_text:
+    cmd: td train-text
+    deps:
+      - data/processed/text_train.parquet
+      - data/processed/text_val.parquet
+      - data/processed/text_test.parquet
+      - artifacts/tokenizer.json
+      - src/threat_detection/models/text_lstm.py
+      - src/threat_detection/models/text_baseline.py
+      - src/threat_detection/training/train_text.py
+    params:
+      - seed
+      - lstm
+    outs:
+      - artifacts/models/text_lstm.pt
+      - artifacts/models/text_lstm.pt.meta.joblib

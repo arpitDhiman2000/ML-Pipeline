@@ -135,9 +135,9 @@ stages:
       nfiles: 8
     - path: src/threat_detection/models
       hash: md5
-      md5: 6c07c324a1c1473dddc7895d2f233d3a.dir
-      size: 22348
-      nfiles: 6
+      md5: 08bde756579ba9aa32a6b951e2b36087.dir
+      size: 46897
+      nfiles: 10
     - path: src/threat_detection/training/train_tabular.py
       hash: md5
       md5: e5874f41783206da40e9df8476810a11
@@ -169,7 +169,7 @@ stages:
     outs:
     - path: artifacts/models/anomaly.joblib
       hash: md5
-      md5: e47acb22958b7574e594d76e186d4f59
+      md5: d3cae73375c697e3214e30488b291211
       size: 2186458
     - path: artifacts/models/classifier.json
       hash: md5
@@ -179,3 +179,58 @@ stages:
       hash: md5
       md5: c8e3dcd542dbd028a2dc0d74e4cf2191
       size: 301
+  train_text:
+    cmd: td train-text
+    deps:
+    - path: artifacts/tokenizer.json
+      hash: md5
+      md5: 766b77533135ef5daa2144854009ecdd
+      size: 885
+    - path: data/processed/text_test.parquet
+      hash: md5
+      md5: a150394094792345a537685cdf58c3ea
+      size: 30633
+    - path: data/processed/text_train.parquet
+      hash: md5
+      md5: 9dda03d64710efd4b447d12a1a531d87
+      size: 105503
+    - path: data/processed/text_val.parquet
+      hash: md5
+      md5: 5a9af5a045ec7e1638a54867b3a2b180
+      size: 16254
+    - path: src/threat_detection/models/text_baseline.py
+      hash: md5
+      md5: 194831c6a1f7fa7a0fc3de653beb3c93
+      size: 1458
+    - path: src/threat_detection/models/text_lstm.py
+      hash: md5
+      md5: d36860d04c47d4e5f7677652ae2c9dda
+      size: 7598
+    - path: src/threat_detection/training/train_text.py
+      hash: md5
+      md5: b661902b72dd4434801644d31ca88478
+      size: 4565
+    params:
+      params.yaml:
+        lstm:
+          embedding_dim: 64
+          hidden_dim: 64
+          num_layers: 1
+          bidirectional: true
+          dropout: 0.3
+          lr: 0.001
+          batch_size: 256
+          max_epochs: 8
+          patience: 3
+          operating_recall: 0.8
+          device: auto
+        seed: 42
+    outs:
+    - path: artifacts/models/text_lstm.pt
+      hash: md5
+      md5: cd00937df25c6bc6047bc4e8fd22cdb0
+      size: 284516
+    - path: artifacts/models/text_lstm.pt.meta.joblib
+      hash: md5
+      md5: 19b99d615e2fd233df0764a780ae6864
+      size: 272

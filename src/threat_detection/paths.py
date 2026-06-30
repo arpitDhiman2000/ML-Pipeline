@@ -108,6 +108,10 @@ class Paths:
         return Paths.models_dir() / "classifier.json"
 
     @staticmethod
+    def text_model() -> Path:
+        return Paths.models_dir() / "text_lstm.pt"
+
+    @staticmethod
     def ensure(path: Path) -> Path:
         """Create the directory (or the file's parent) if missing; return it."""
         target = path if path.suffix == "" else path.parent

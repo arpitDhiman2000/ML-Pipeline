@@ -110,6 +110,22 @@ class EvalGateConfig(BaseModel):
     max_p99_latency_ms: float = Field(default=50.0, gt=0.0)  # enforced from Sprint 4
 
 
+class LSTMConfig(BaseModel):
+    """PyTorch LSTM text classifier (command/payload threat detection)."""
+
+    embedding_dim: int = Field(default=64, gt=0)
+    hidden_dim: int = Field(default=64, gt=0)
+    num_layers: int = Field(default=1, gt=0)
+    bidirectional: bool = True
+    dropout: float = Field(default=0.3, ge=0.0, lt=1.0)
+    lr: float = Field(default=1e-3, gt=0.0)
+    batch_size: int = Field(default=256, gt=0)
+    max_epochs: int = Field(default=8, gt=0)
+    patience: int = Field(default=3, gt=0)  # early-stopping patience on val loss
+    operating_recall: float = Field(default=0.80, gt=0.0, lt=1.0)
+    device: Literal["auto", "cpu", "cuda"] = "auto"
+
+
 class AppConfig(BaseModel):
     """Top-level validated view over ``params.yaml``."""
 
@@ -121,9 +137,9 @@ class AppConfig(BaseModel):
     isolation_forest: IsolationForestConfig = IsolationForestConfig()
     xgboost: XGBoostConfig = XGBoostConfig()
     eval_gate: EvalGateConfig = EvalGateConfig()
+    lstm: LSTMConfig = LSTMConfig()
 
     # Forward-compatible holders for parameters added in later sprints.
-    lstm: dict = {}
     fusion: dict = {}
     drift_monitor: dict = {}
 
