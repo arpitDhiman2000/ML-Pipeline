@@ -1,0 +1,3 @@
+# Files/patterns DVC should ignore when tracking data directories.
+.gitkeep
+*.tmp

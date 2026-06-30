@@ -1,0 +1,59 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# ---- Testing / tooling ----
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# ---- Data & artifacts (tracked by DVC, never committed to git) ----
+# Ignore directory *contents* but keep the .gitkeep so the zone structure
+# survives a fresh clone (Git can't re-include a file under a fully-ignored dir).
+/data/raw/*
+/data/processed/*
+/data/external/*
+/data/interim/*
+/artifacts/*
+!/data/raw/.gitkeep
+!/data/processed/.gitkeep
+!/data/external/.gitkeep
+!/data/interim/.gitkeep
+!/artifacts/.gitkeep
+*.parquet
+*.csv
+!tests/**/*.csv
+*.pkl
+*.joblib
+*.pt
+*.pth
+
+# ---- MLflow ----
+/mlruns/
+/mlartifacts/
+mlflow.db
+
+# ---- DVC ----
+/.dvc/cache
+/.dvc/tmp
+/.dvc/config.local
+
+# ---- IDE / OS ----
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,49 @@
+schema: '2.0'
+stages:
+  generate_data:
+    cmd: td generate --force
+    deps:
+    - path: src/threat_detection/data/generate.py
+      hash: md5
+      md5: 1070f0de6c8dccc540f6ec6f96720adb
+      size: 2479
+    - path: src/threat_detection/data/schema.py
+      hash: md5
+      md5: b557760e62acc2b4cba32c9b582d319a
+      size: 4726
+    - path: src/threat_detection/data/synthetic.py
+      hash: md5
+      md5: b2f17a6125901d62a618fccf97eb22c3
+      size: 10525
+    params:
+      params.yaml:
+        data:
+          tabular:
+            n_rows: 50000
+            benign_ratio: 0.75
+            attack_mix:
+              DoS: 0.35
+              DDoS: 0.25
+              PortScan: 0.2
+              Brute Force: 0.1
+              Web Attack: 0.06
+              Botnet: 0.03
+              Infiltration: 0.01
+            inf_nan_fraction: 0.01
+            duplicate_fraction: 0.02
+          text:
+            n_rows: 20000
+            malicious_ratio: 0.3
+          drift:
+            enabled: false
+            shift_scale: 1.0
+        seed: 42
+    outs:
+    - path: data/raw/cicids2017/flows.parquet
+      hash: md5
+      md5: c35c9319cc93d53fbb92a208c84b9397
+      size: 33214215
+    - path: data/raw/text_corpus/commands.parquet
+      hash: md5
+      md5: d1d1b542910118ea61c45bc22338f0a1
+      size: 148787

@@ -1,0 +1,22 @@
+# Filesystem layout for the data zones and artifact stores.
+# Paths are relative to the project root and resolved by threat_detection.paths.
+# Keeping these in config (not code) lets CI / cloud override the root via the
+# THREAT_DETECTION_DATA_ROOT env var without touching source.
+
+data_root: data
+zones:
+  raw: data/raw            # immutable landing zone (DVC-tracked)
+  interim: data/interim    # intermediate cleaning outputs
+  processed: data/processed # model-ready feature matrices (DVC-tracked)
+  external: data/external  # third-party reference data
+
+datasets:
+  tabular_raw: data/raw/cicids2017/flows.parquet
+  text_raw: data/raw/text_corpus/commands.parquet
+
+artifacts:
+  root: artifacts
+  preprocessor: artifacts/preprocessor.joblib
+  tokenizer: artifacts/tokenizer.json
+  models: artifacts/models
+  reports: artifacts/reports

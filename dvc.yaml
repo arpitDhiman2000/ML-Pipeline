@@ -1,0 +1,18 @@
+# DVC pipeline definition. Each stage declares its deps, params, and outputs so
+# `dvc repro` re-runs ONLY the stages whose inputs changed. This is the
+# reproducibility backbone: the DAG below is the auditable record of how raw
+# bytes become a trained model. Stages are added sprint by sprint.
+
+stages:
+  generate_data:
+    cmd: td generate --force
+    deps:
+      - src/threat_detection/data/synthetic.py
+      - src/threat_detection/data/generate.py
+      - src/threat_detection/data/schema.py
+    params:
+      - seed
+      - data
+    outs:
+      - data/raw/cicids2017/flows.parquet
+      - data/raw/text_corpus/commands.parquet

@@ -1,0 +1,55 @@
+# =============================================================================
+# params.yaml — single source of truth for all pipeline parameters.
+#
+# Why this file exists (interview point): no hyperparameter or path is ever
+# hardcoded in code. DVC tracks this file, so every `dvc repro` run is tied to
+# an exact, version-controlled parameter set. Change a value here -> DVC knows
+# which stages are stale and must re-run. This is what makes runs reproducible.
+# =============================================================================
+
+seed: 42
+
+# ---- Data generation (synthetic CICIDS2017-schema dataset) ------------------
+# Used in Sprint 0 so the whole pipeline runs without the 2.8 GB real download.
+# Drop real CICIDS2017 CSVs into data/raw/cicids2017/ to use real data instead.
+data:
+  tabular:
+    n_rows: 50000            # ~ one day of events (matches the "50K+/day" story)
+    benign_ratio: 0.75       # ~75% benign -> the imbalance the whole eval story rests on
+    # Attack-class mix among the remaining ~25% (must sum to 1.0).
+    attack_mix:
+      DoS: 0.35
+      DDoS: 0.25
+      PortScan: 0.20
+      "Brute Force": 0.10
+      "Web Attack": 0.06
+      Botnet: 0.03
+      Infiltration: 0.01
+    # Data-quality issues deliberately injected so preprocessing has real work,
+    # mirroring known CICIDS2017 quirks (Inf/NaN in rate columns, dup flows).
+    inf_nan_fraction: 0.01   # fraction of rate-column cells set to Inf/NaN
+    duplicate_fraction: 0.02 # fraction of rows duplicated
+  text:
+    n_rows: 20000
+    malicious_ratio: 0.30    # imbalance on the text side too
+
+  # Drift simulation (used in Sprint 6). When enabled, shifts feature
+  # distributions so Evidently can detect it and the retraining gate can react.
+  drift:
+    enabled: false
+    shift_scale: 1.0         # multiplicative shift applied to signal features
+
+# ---- Train/val/test split ---------------------------------------------------
+split:
+  test_size: 0.20
+  val_size: 0.10
+  stratify: true
+
+# ---- Placeholders filled in by later sprints --------------------------------
+preprocessing: {}    # Sprint 1
+isolation_forest: {} # Sprint 2
+xgboost: {}          # Sprint 2
+lstm: {}             # Sprint 3
+fusion: {}           # Sprint 4
+eval_gate: {}        # Sprint 2/5
+drift_monitor: {}    # Sprint 6
