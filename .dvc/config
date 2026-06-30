@@ -4,3 +4,5 @@
     url = ../../dvc-remote-threat-detection
 ['remote "dagshub"']
     url = https://dagshub.com/arpitDhiman2000/ML-Pipeline.dvc
+['remote "s3remote"']
+    url = s3://threat-detection-569022535358/dvc
