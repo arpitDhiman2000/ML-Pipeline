@@ -1,1 +1,1 @@
-"""serving layer (populated in a later sprint)."""
+"""Serving layer: FastAPI app, schemas, model bundle, and explanations."""

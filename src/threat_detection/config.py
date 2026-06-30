@@ -126,6 +126,24 @@ class LSTMConfig(BaseModel):
     device: Literal["auto", "cpu", "cuda"] = "auto"
 
 
+class FusionConfig(BaseModel):
+    """Stacked meta-learner that fuses the three scores into one decision."""
+
+    decision_threshold: float = Field(default=0.5, gt=0.0, lt=1.0)
+    missing_text_score: float = Field(default=0.5, ge=0.0, le=1.0)  # prior when no payload
+    # Correlation used to build the synthetic JOINT training set (tabular+text).
+    p_mal_given_attack: float = Field(default=0.7, ge=0.0, le=1.0)
+    p_mal_given_benign: float = Field(default=0.03, ge=0.0, le=1.0)
+
+
+class ServingConfig(BaseModel):
+    """FastAPI serving parameters."""
+
+    host: str = "0.0.0.0"
+    port: int = Field(default=8000, gt=0)
+    top_k_explanations: int = Field(default=5, gt=0)
+
+
 class AppConfig(BaseModel):
     """Top-level validated view over ``params.yaml``."""
 
@@ -138,9 +156,10 @@ class AppConfig(BaseModel):
     xgboost: XGBoostConfig = XGBoostConfig()
     eval_gate: EvalGateConfig = EvalGateConfig()
     lstm: LSTMConfig = LSTMConfig()
+    fusion: FusionConfig = FusionConfig()
+    serving: ServingConfig = ServingConfig()
 
     # Forward-compatible holders for parameters added in later sprints.
-    fusion: dict = {}
     drift_monitor: dict = {}
 
 

@@ -89,6 +89,40 @@ def train_text_cmd(
     console.print(table)
 
 
+@app.command("train-fusion")
+def train_fusion_cmd(
+    no_register: bool = typer.Option(False, help="Skip MLflow model-registry registration"),
+) -> None:
+    """Train the fusion meta-learner over the three model scores."""
+    from threat_detection.training.train_fusion import train
+
+    metrics = train(register=not no_register)
+    table = Table(title="Fusion — test metrics (meta-learner vs averaging)")
+    table.add_column("Metric")
+    table.add_column("Value", justify="right")
+    for key, value in metrics.items():
+        table.add_row(key, f"{value:.4f}")
+    console.print(table)
+
+
+@app.command()
+def serve(
+    host: str = typer.Option(None, help="Bind host (default from config)"),
+    port: int = typer.Option(None, help="Bind port (default from config)"),
+    reload: bool = typer.Option(False, help="Auto-reload (dev only)"),
+) -> None:
+    """Run the FastAPI scoring service with Uvicorn."""
+    import uvicorn
+
+    cfg = get_config()
+    uvicorn.run(
+        "threat_detection.serving.app:app",
+        host=host or cfg.serving.host,
+        port=port or cfg.serving.port,
+        reload=reload,
+    )
+
+
 @app.command()
 def promote(
     model: str = typer.Argument(

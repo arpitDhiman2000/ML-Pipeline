@@ -17,7 +17,8 @@ log = get_logger(__name__)
 # Canonical registered-model names (single source of truth).
 TABULAR_MODEL = "threat-detection-tabular"
 TEXT_MODEL = "threat-detection-text"
-ALL_MODELS = (TABULAR_MODEL, TEXT_MODEL)
+FUSION_MODEL = "threat-detection-fusion"
+ALL_MODELS = (TABULAR_MODEL, TEXT_MODEL, FUSION_MODEL)
 
 PRODUCTION_ALIAS = "production"
 

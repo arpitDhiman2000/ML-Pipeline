@@ -97,6 +97,17 @@ lstm:
   operating_recall: 0.80
   device: auto          # auto -> cuda if available, else cpu
 
+# ---- Fusion meta-learner + serving (Sprint 4) -------------------------------
+fusion:
+  decision_threshold: 0.5
+  missing_text_score: 0.5   # neutral prior used when a request has no payload
+  p_mal_given_attack: 0.7   # synthetic joint-set correlation (fusion training only)
+  p_mal_given_benign: 0.03
+
+serving:
+  host: 0.0.0.0
+  port: 8000
+  top_k_explanations: 5
+
 # ---- Placeholders filled in by later sprints --------------------------------
-fusion: {}           # Sprint 4
 drift_monitor: {}    # Sprint 6

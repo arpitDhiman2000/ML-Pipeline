@@ -72,3 +72,20 @@ stages:
     outs:
       - artifacts/models/text_lstm.pt
       - artifacts/models/text_lstm.pt.meta.joblib
+
+  train_fusion:
+    cmd: td train-fusion
+    deps:
+      - data/processed/tabular_train.parquet
+      - data/processed/tabular_test.parquet
+      - data/processed/text_train.parquet
+      - artifacts/models/anomaly.joblib
+      - artifacts/models/classifier.json
+      - artifacts/models/text_lstm.pt
+      - src/threat_detection/models/fusion.py
+      - src/threat_detection/training/train_fusion.py
+    params:
+      - seed
+      - fusion
+    outs:
+      - artifacts/models/fusion.joblib
