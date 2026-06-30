@@ -113,3 +113,69 @@ stages:
       hash: md5
       md5: 5a9af5a045ec7e1638a54867b3a2b180
       size: 16254
+  train_tabular:
+    cmd: td train-tabular
+    deps:
+    - path: data/processed/tabular_test.parquet
+      hash: md5
+      md5: 4766aea689f5215ccbae9cb34701222c
+      size: 3892689
+    - path: data/processed/tabular_train.parquet
+      hash: md5
+      md5: dd3f64335c12a1a761218394ee5b2064
+      size: 14052633
+    - path: data/processed/tabular_val.parquet
+      hash: md5
+      md5: 5d547573486a8febba87b0aba1452041
+      size: 1929657
+    - path: src/threat_detection/evaluation
+      hash: md5
+      md5: e10497c70bbe580a0b120df5c093515f.dir
+      size: 24140
+      nfiles: 8
+    - path: src/threat_detection/models
+      hash: md5
+      md5: 6c07c324a1c1473dddc7895d2f233d3a.dir
+      size: 22348
+      nfiles: 6
+    - path: src/threat_detection/training/train_tabular.py
+      hash: md5
+      md5: e5874f41783206da40e9df8476810a11
+      size: 5322
+    params:
+      params.yaml:
+        eval_gate:
+          min_pr_auc: 0.8
+          min_per_class_recall: 0.5
+          max_p99_latency_ms: 50
+        isolation_forest:
+          contamination: auto
+          n_estimators: 200
+          max_samples: auto
+        seed: 42
+        xgboost:
+          max_depth: 6
+          learning_rate: 0.1
+          n_estimators: 200
+          subsample: 0.8
+          colsample_bytree: 0.8
+          min_child_weight: 1.0
+          reg_lambda: 1.0
+          reg_alpha: 0.0
+          early_stopping_rounds: 20
+          tune: false
+          n_trials: 15
+          operating_recall: 0.8
+    outs:
+    - path: artifacts/models/anomaly.joblib
+      hash: md5
+      md5: e47acb22958b7574e594d76e186d4f59
+      size: 2186458
+    - path: artifacts/models/classifier.json
+      hash: md5
+      md5: 1fc9e23994406750a9000bda5c9edad5
+      size: 6283423
+    - path: artifacts/models/classifier.json.meta.joblib
+      hash: md5
+      md5: c8e3dcd542dbd028a2dc0d74e4cf2191
+      size: 301

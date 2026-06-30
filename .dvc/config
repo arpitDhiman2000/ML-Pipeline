@@ -1,4 +1,6 @@
 [core]
-    remote = localremote
+    remote = dagshub
 ['remote "localremote"']
     url = ../../dvc-remote-threat-detection
+['remote "dagshub"']
+    url = https://dagshub.com/arpitDhiman2000/ML-Pipeline.dvc

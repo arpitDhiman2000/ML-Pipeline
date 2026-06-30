@@ -36,3 +36,22 @@ stages:
       - data/processed/text_test.parquet
       - artifacts/preprocessor.joblib
       - artifacts/tokenizer.json
+
+  train_tabular:
+    cmd: td train-tabular
+    deps:
+      - data/processed/tabular_train.parquet
+      - data/processed/tabular_val.parquet
+      - data/processed/tabular_test.parquet
+      - src/threat_detection/models
+      - src/threat_detection/training/train_tabular.py
+      - src/threat_detection/evaluation
+    params:
+      - seed
+      - isolation_forest
+      - xgboost
+      - eval_gate
+    outs:
+      - artifacts/models/anomaly.joblib
+      - artifacts/models/classifier.json
+      - artifacts/models/classifier.json.meta.joblib

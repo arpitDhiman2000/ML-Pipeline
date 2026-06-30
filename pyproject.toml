@@ -17,6 +17,7 @@ dependencies = [
     "typer>=0.12",             # CLI entrypoints (generate-data, train, etc.)
     "rich>=13.7",              # readable logs / CLI output
     "structlog>=24.1",        # structured JSON logging for production
+    "python-dotenv>=1.0",     # load MLflow/DagsHub creds from .env
 ]
 
 [project.scripts]
@@ -96,6 +97,13 @@ markers = [
     "unit: fast, isolated unit tests (no I/O, no network)",
     "integration: cross-component tests (may touch disk, services)",
     "slow: long-running tests (training, load tests)",
+]
+# Keep our own warnings visible; silence noisy third-party deprecations.
+filterwarnings = [
+    "ignore::DeprecationWarning:mlflow.*",
+    "ignore::DeprecationWarning:pydantic.*",
+    "ignore:.*min_items.*:DeprecationWarning",
+    "ignore:.*utcnow.*:DeprecationWarning",
 ]
 
 [tool.coverage.run]

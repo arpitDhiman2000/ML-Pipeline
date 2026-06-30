@@ -96,6 +96,18 @@ class Paths:
         return Paths.processed_zone() / f"{name}.parquet"
 
     @staticmethod
+    def models_dir() -> Path:
+        return _resolve(_paths_config()["artifacts"]["models"])
+
+    @staticmethod
+    def anomaly_model() -> Path:
+        return Paths.models_dir() / "anomaly.joblib"
+
+    @staticmethod
+    def classifier_model() -> Path:
+        return Paths.models_dir() / "classifier.json"
+
+    @staticmethod
     def ensure(path: Path) -> Path:
         """Create the directory (or the file's parent) if missing; return it."""
         target = path if path.suffix == "" else path.parent

@@ -61,6 +61,16 @@ uv run pytest
 
 See [`docs/`](docs/) — each sprint appends a short "what & how" note.
 
+### Cloud (DagsHub: DVC remote + hosted MLflow)
+
+Experiments and versioned data live on DagsHub. One-time setup (your account +
+token) is in [`docs/dagshub.md`](docs/dagshub.md). Quick check after setup:
+
+```powershell
+Copy-Item .env.example .env   # then fill in your DagsHub MLflow creds
+uv run td mlflow-smoke        # logs a run; see it in the DagsHub Experiments tab
+```
+
 ## Dependency groups
 
 Installed per sprint to keep environments light (see `pyproject.toml`):

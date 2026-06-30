@@ -1,1 +1,1 @@
-"""training layer (populated in a later sprint)."""
+"""Training layer: train loops, MLflow logging, and model registration."""

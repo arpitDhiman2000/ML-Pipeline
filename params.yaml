@@ -57,10 +57,33 @@ preprocessing:
     max_vocab: 5000   # cap vocabulary size
     lowercase: true
 
+# ---- Tabular models (Sprint 2) ----------------------------------------------
+isolation_forest:
+  contamination: auto   # "auto" => tie to observed attack prevalence in train (~25%)
+  n_estimators: 200
+  max_samples: auto
+
+xgboost:
+  max_depth: 6
+  learning_rate: 0.1
+  n_estimators: 200
+  subsample: 0.8
+  colsample_bytree: 0.8
+  min_child_weight: 1.0
+  reg_lambda: 1.0
+  reg_alpha: 0.0
+  early_stopping_rounds: 20
+  tune: false           # Optuna search off by default (turn on to chase performance)
+  n_trials: 15
+  operating_recall: 0.80  # recall target for PR-curve threshold selection
+
+# ---- Evaluation gate: the promotion rule (CI in Sprint 5, retrain in Sprint 6)
+eval_gate:
+  min_pr_auc: 0.80
+  min_per_class_recall: 0.50
+  max_p99_latency_ms: 50  # enforced once serving exists (Sprint 4)
+
 # ---- Placeholders filled in by later sprints --------------------------------
-isolation_forest: {} # Sprint 2
-xgboost: {}          # Sprint 2
 lstm: {}             # Sprint 3
 fusion: {}           # Sprint 4
-eval_gate: {}        # Sprint 2/5
 drift_monitor: {}    # Sprint 6

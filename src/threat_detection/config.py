@@ -76,6 +76,40 @@ class PreprocessingConfig(BaseModel):
     text: TextTokenizerConfig = TextTokenizerConfig()
 
 
+class IsolationForestConfig(BaseModel):
+    """Unsupervised anomaly stage (the zero-day safety net)."""
+
+    # "auto" -> tie contamination to the observed attack prevalence in train.
+    contamination: float | Literal["auto"] = "auto"
+    n_estimators: int = Field(default=200, gt=0)
+    max_samples: float | Literal["auto"] = "auto"
+
+
+class XGBoostConfig(BaseModel):
+    """Supervised multi-class attack classifier."""
+
+    max_depth: int = Field(default=6, gt=0)
+    learning_rate: float = Field(default=0.1, gt=0.0)
+    n_estimators: int = Field(default=200, gt=0)
+    subsample: float = Field(default=0.8, gt=0.0, le=1.0)
+    colsample_bytree: float = Field(default=0.8, gt=0.0, le=1.0)
+    min_child_weight: float = Field(default=1.0, ge=0.0)
+    reg_lambda: float = Field(default=1.0, ge=0.0)
+    reg_alpha: float = Field(default=0.0, ge=0.0)
+    early_stopping_rounds: int = Field(default=20, gt=0)
+    tune: bool = False  # enable Optuna search (off by default = fast)
+    n_trials: int = Field(default=15, gt=0)
+    operating_recall: float = Field(default=0.80, gt=0.0, lt=1.0)  # PR-curve target
+
+
+class EvalGateConfig(BaseModel):
+    """Promotion rule encoded as data (used by CI in Sprint 5, retrain in Sprint 6)."""
+
+    min_pr_auc: float = Field(default=0.80, ge=0.0, le=1.0)
+    min_per_class_recall: float = Field(default=0.50, ge=0.0, le=1.0)
+    max_p99_latency_ms: float = Field(default=50.0, gt=0.0)  # enforced from Sprint 4
+
+
 class AppConfig(BaseModel):
     """Top-level validated view over ``params.yaml``."""
 
@@ -83,13 +117,14 @@ class AppConfig(BaseModel):
     data: DataConfig
     split: SplitConfig
 
-    # Forward-compatible holders for parameters added in later sprints.
     preprocessing: PreprocessingConfig = PreprocessingConfig()
-    isolation_forest: dict = {}
-    xgboost: dict = {}
+    isolation_forest: IsolationForestConfig = IsolationForestConfig()
+    xgboost: XGBoostConfig = XGBoostConfig()
+    eval_gate: EvalGateConfig = EvalGateConfig()
+
+    # Forward-compatible holders for parameters added in later sprints.
     lstm: dict = {}
     fusion: dict = {}
-    eval_gate: dict = {}
     drift_monitor: dict = {}
 
 

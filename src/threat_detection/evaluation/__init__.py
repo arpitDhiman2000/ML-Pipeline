@@ -1,1 +1,1 @@
-"""evaluation layer (populated in a later sprint)."""
+"""Evaluation layer: honest metrics, threshold selection, and the eval gate."""
